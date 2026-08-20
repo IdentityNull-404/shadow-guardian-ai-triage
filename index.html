@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Shadow Guardian is an explainable AI incident-triage tool for suspicious emails, messages, and security logs."
+    />
+    <title>Shadow Guardian AI Incident Triage Center</title>
+    <link rel="icon" href="./public/favicon.svg" />
+    <link rel="stylesheet" href="./app/globals.css" />
+    <script type="module" src="./static-app.js"></script>
+  </head>
+  <body>
+    <!--
+      GitHub Pages entry point.
+      This client-side edition mirrors the interactive course project and does
+      not require a server, database, account, or external AI service.
+    -->
+    <main>
+      <header class="site-header">
+        <a class="brand" href="#top" aria-label="Shadow Guardian home">
+          <span class="brand-mark" aria-hidden="true">SG</span>
+          <span>
+            <strong>SHADOW GUARDIAN</strong>
+            <small>AI INCIDENT TRIAGE</small>
+          </span>
+        </a>
+        <nav aria-label="Primary navigation">
+          <a href="#triage">Triage</a>
+          <a href="#learning">Learning</a>
+          <a href="#team">AI team</a>
+          <a href="#guide">Guide</a>
+        </nav>
+        <div class="local-badge"><span aria-hidden="true"></span> Local analysis</div>
+      </header>
+
+      <section class="hero" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow">AI-ASSISTED SECURITY OPERATIONS</p>
+          <h1>Turn suspicious text into an <em>actionable</em> incident brief.</h1>
+          <p class="hero-description">
+            Shadow Guardian analyzes emails, messages, and security logs for
+            social-engineering pressure, malicious indicators, suspicious
+            entities, and account threats—then explains what to do next.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#triage">Analyze a case <span aria-hidden="true">→</span></a>
+            <a class="button button-quiet" href="#guide">How it works</a>
+          </div>
+          <p class="privacy-note"><span aria-hidden="true">◆</span> Runs entirely in your browser. No submitted text is uploaded or stored.</p>
+        </div>
+
+        <aside class="engine-panel" aria-label="Analysis engine status">
+          <div class="panel-topline"><span>ENGINE STATUS</span><span class="status-online">ONLINE</span></div>
+          <div class="engine-visual" aria-hidden="true">
+            <div class="radar-ring radar-one"></div>
+            <div class="radar-ring radar-two"></div>
+            <div class="radar-sweep"></div>
+            <div class="radar-core">SG</div>
+            <i class="ping ping-one"></i><i class="ping ping-two"></i><i class="ping ping-three"></i>
+          </div>
+          <div class="engine-modules">
+            <div><span>NLP ENGINE</span><strong>READY</strong></div>
+            <div><span>SENTIMENT</span><strong>READY</strong></div>
+            <div><span>ENTITY SCAN</span><strong>READY</strong></div>
+            <div><span>RISK MODEL</span><strong id="engine-model-version">v1.0</strong></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="trust-strip" aria-label="Product features">
+        <span><b>01</b> Explainable scoring</span>
+        <span><b>02</b> No account required</span>
+        <span><b>03</b> Human review built in</span>
+        <span><b>04</b> Zero data retention</span>
+      </section>
+
+      <section class="triage-section" id="triage">
+        <div class="section-heading">
+          <div><p class="eyebrow">LIVE WORKSPACE</p><h2>Incident triage console</h2></div>
+          <p>Test a realistic example or paste your own non-confidential text. Every result includes the evidence behind the score.</p>
+        </div>
+
+        <div class="workspace-grid">
+          <div class="input-panel">
+            <div class="panel-heading">
+              <div><span class="panel-kicker">CASE INPUT</span><h3>What are you investigating?</h3></div>
+              <span class="case-id">CASE-0826</span>
+            </div>
+            <div class="field-row">
+              <label for="case-type">Content type</label>
+              <select id="case-type">
+                <option value="email">Email</option>
+                <option value="message">Text / chat message</option>
+                <option value="security-log">Security log</option>
+              </select>
+            </div>
+            <div class="sample-group">
+              <span>LOAD A TEST CASE</span>
+              <div class="sample-buttons">
+                <button class="active" data-sample="phishing" type="button">Credential phishing</button>
+                <button data-sample="malware" type="button">Malware delivery</button>
+                <button data-sample="login" type="button">Security alert</button>
+                <button data-sample="benign" type="button">Normal message</button>
+              </div>
+            </div>
+            <label class="textarea-label" for="case-text">
+              Message or log content <span id="character-count">0 characters</span>
+            </label>
+            <textarea id="case-text" placeholder="Paste suspicious text here…" spellcheck="false"></textarea>
+            <div class="input-footer">
+              <p>Minimum 12 characters. Never paste passwords or sensitive data.</p>
+              <button class="button button-primary analyze-button" id="analyze-button" type="button">Run AI triage <span aria-hidden="true">→</span></button>
+            </div>
+          </div>
+
+          <div class="result-panel" aria-live="polite">
+            <div class="panel-heading result-heading">
+              <div><span class="panel-kicker">ANALYSIS COMPLETE</span><h3>Threat assessment</h3></div>
+              <button class="copy-button" id="copy-report" type="button">Copy report</button>
+            </div>
+            <div class="score-summary">
+              <div class="score-ring score-critical" id="score-ring" style="--score: 0deg">
+                <div><strong id="risk-score">0</strong><span>/ 100</span></div>
+              </div>
+              <div>
+                <span class="severity severity-critical" id="severity">Critical risk</span>
+                <h4 id="classification">Analyzing…</h4>
+                <p id="analysis-summary"></p>
+              </div>
+            </div>
+            <div class="metric-grid">
+              <div><span>LANGUAGE TONE</span><strong id="tone">—</strong></div>
+              <div><span>MODEL CONFIDENCE</span><strong id="confidence">—</strong></div>
+              <div><span>TOKENS REVIEWED</span><strong id="token-count">—</strong></div>
+            </div>
+            <div class="result-block">
+              <div class="block-title"><h4>Why it was flagged</h4><span id="signal-count">0 signals</span></div>
+              <div class="signal-list" id="signal-list"></div>
+            </div>
+            <div class="result-block" id="entity-block">
+              <div class="block-title"><h4>Extracted indicators</h4><span>NLP entities</span></div>
+              <div class="entity-list" id="entity-list"></div>
+            </div>
+            <div class="result-block action-block">
+              <div class="block-title"><h4>Recommended response</h4><span>Human decision</span></div>
+              <ol id="action-list"></ol>
+            </div>
+            <div class="feedback-panel">
+              <div class="feedback-copy">
+                <span>REINFORCEMENT FEEDBACK</span><strong>Help the model learn</strong>
+                <p>Reward or correct this result. Adjustments last for the current session only.</p>
+              </div>
+              <div class="feedback-buttons" aria-label="Assessment feedback">
+                <button data-feedback="accurate" type="button">Accurate</button>
+                <button data-feedback="too-high" type="button">Risk too high</button>
+                <button data-feedback="too-low" type="button">Risk too low</button>
+              </div>
+              <div class="reward-status"><span id="feedback-count">0 rewards</span><p id="feedback-message">No analyst reward has been recorded yet.</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="method-section" id="method">
+        <div class="section-heading compact-heading">
+          <div><p class="eyebrow">UNDER THE HOOD</p><h2>AI that shows its work</h2></div>
+          <p>The prototype uses transparent browser-based methods so students, analysts, and nontechnical users can understand each decision.</p>
+        </div>
+        <div class="method-grid">
+          <article><span>01 / NLP</span><h3>Language processing</h3><p>Tokenizes text, recognizes security phrases, and extracts URLs, email addresses, and IP addresses.</p></article>
+          <article><span>02 / SENTIMENT</span><h3>Pressure detection</h3><p>Compares emotional and urgency cues to identify fear-based language used in social engineering.</p></article>
+          <article><span>03 / CLASSIFICATION</span><h3>Explainable risk model</h3><p>Combines weighted evidence to classify the case and produce a severity-based response plan.</p></article>
+          <article><span>04 / REINFORCEMENT</span><h3>Analyst feedback</h3><p>Accepts rewards and corrections, then adjusts risk sensitivity during the active session.</p></article>
+          <article><span>05 / GENETIC ALGORITHM</span><h3>Weight evolution</h3><p>Uses selection, crossover, mutation, and fitness scoring to optimize detection weights.</p></article>
+        </div>
+      </section>
+
+      <section class="learning-section" id="learning">
+        <div class="section-heading">
+          <div><p class="eyebrow">MODEL LEARNING LAB</p><h2>Train it. Test it. Keep the human in charge.</h2></div>
+          <p>These interactive demonstrations show two contemporary AI learning approaches without hiding the logic behind an external service.</p>
+        </div>
+        <div class="learning-grid">
+          <article class="learning-card reinforcement-card">
+            <div class="learning-card-heading"><span>RL / SESSION 01</span><b>REINFORCEMENT LEARNING</b></div>
+            <h3>Feedback changes model sensitivity.</h3>
+            <p>The analyst acts as the environment. Each correction becomes a reward signal that moves the session risk threshold up or down.</p>
+            <div class="bias-meter" aria-label="Session model bias">
+              <span>−15</span><div><i id="bias-dot" style="left: 50%"></i></div><span>+15</span>
+            </div>
+            <div class="learning-readout">
+              <div><span>CURRENT BIAS</span><strong id="bias-value">0</strong></div>
+              <div><span>REWARD EVENTS</span><strong id="reward-events">0</strong></div>
+              <div><span>MEMORY</span><strong>SESSION</strong></div>
+            </div>
+          </article>
+          <article class="learning-card genetic-card">
+            <div class="learning-card-heading"><span id="ga-model-version">GA / MODEL 1.0</span><b>GENETIC ALGORITHM</b></div>
+            <h3>Evolve a stronger set of detection weights.</h3>
+            <p>A population of 36 candidate models competes against six labeled cases for 40 generations. The fittest weights survive.</p>
+            <div class="weight-list" id="weight-list"></div>
+            <div class="optimizer-footer">
+              <div class="optimizer-metrics"><span>BEFORE <b id="before-error">—</b></span><span>AFTER <b id="after-error">—</b></span></div>
+              <button class="button button-primary" id="evolve-button" type="button">Evolve model <span aria-hidden="true">↗</span></button>
+            </div>
+          </article>
+        </div>
+        <div class="learning-reset"><p id="learning-status">Model 1.0 · Baseline weights active</p><button id="reset-learning" type="button">Reset learning lab</button></div>
+      </section>
+
+      <section class="team-section" id="team">
+        <div class="team-intro">
+          <div><p class="eyebrow">AI DEVELOPMENT TEAM</p><h2>Three specialists. One human manager.</h2></div>
+          <div class="manager-badge"><span>PROJECT MANAGER</span><strong>Stefanie Redding</strong><p>Defined the purpose, assigned roles, reviewed outputs, and approved the final experience.</p></div>
+        </div>
+        <div class="team-grid">
+          <article>
+            <div class="employee-topline"><span class="employee-avatar">N</span><span class="employee-status">ASSIGNMENT COMPLETE</span></div>
+            <span class="employee-number">AI EMPLOYEE 01</span><h3>Nyx</h3><h4>Threat Logic Engineer</h4>
+            <p>Designed the security-signal taxonomy, risk categories, and incident-response recommendations.</p>
+            <ul><li>Threat indicator research</li><li>Explainable scoring rules</li><li>Response playbooks</li></ul>
+          </article>
+          <article>
+            <div class="employee-topline"><span class="employee-avatar">M</span><span class="employee-status">ASSIGNMENT COMPLETE</span></div>
+            <span class="employee-number">AI EMPLOYEE 02</span><h3>Mara</h3><h4>UX &amp; NLP Analyst</h4>
+            <p>Refined the language analysis, pressure detection, plain-language explanations, and user flow.</p>
+            <ul><li>Sentiment vocabulary</li><li>Entity extraction review</li><li>Accessibility and UX</li></ul>
+          </article>
+          <article>
+            <div class="employee-topline"><span class="employee-avatar">C</span><span class="employee-status">ASSIGNMENT COMPLETE</span></div>
+            <span class="employee-number">AI EMPLOYEE 03</span><h3>Cipher</h3><h4>QA &amp; Optimization Engineer</h4>
+            <p>Tested sample cases, validated responsive behavior, and implemented genetic model optimization.</p>
+            <ul><li>Functional test cases</li><li>Genetic algorithm tuning</li><li>Code and quality review</li></ul>
+          </article>
+        </div>
+        <p class="team-note">Each AI employee received a defined role, deliverables, constraints, and review criteria. Final decisions remained with the human manager.</p>
+      </section>
+
+      <section class="guide-section" id="guide">
+        <div><p class="eyebrow">HOW TO USE</p><h2>Three steps. No cybersecurity degree required.</h2></div>
+        <div class="guide-steps">
+          <article><b>1</b><div><h3>Add the evidence</h3><p>Choose the content type, then paste a suspicious email, message, or security log.</p></div></article>
+          <article><b>2</b><div><h3>Run AI triage</h3><p>Review the score, threat category, language tone, extracted entities, and evidence.</p></div></article>
+          <article><b>3</b><div><h3>Make the human call</h3><p>Follow the recommended response, verify independently, and escalate when appropriate.</p></div></article>
+        </div>
+      </section>
+
+      <footer>
+        <div class="brand footer-brand"><span class="brand-mark" aria-hidden="true">SG</span><span><strong>SHADOW GUARDIAN</strong><small>AI INCIDENT TRIAGE</small></span></div>
+        <p>Educational security prototype created by Stefanie Redding.</p><p>AI assists. Humans decide.</p>
+      </footer>
+    </main>
+    <noscript>This application requires JavaScript to perform local AI analysis.</noscript>
+  </body>
+</html>
