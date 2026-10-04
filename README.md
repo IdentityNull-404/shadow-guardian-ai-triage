@@ -6,9 +6,9 @@ The application has a practical purpose: helping a user decide whether suspiciou
 
 ## Live Application
 
-After GitHub Pages is enabled, the static site is available at:
+GitHub Pages is enabled for this repository. The static application URL is:
 
-`https://identitynull-404.github.io/shadow-guardian-ai-triage/`
+[https://identitynull-404.github.io/shadow-guardian-ai-triage/](https://identitynull-404.github.io/shadow-guardian-ai-triage/)
 
 ## How to Use
 
@@ -48,18 +48,22 @@ Detailed assignments and acceptance criteria are recorded in [AI_EMPLOYEE_LOG.md
 | `index.html` | GitHub Pages entry point and complete user interface |
 | `static-app.js` | Commented NLP, sentiment, scoring, feedback, and genetic-algorithm logic |
 | `app/globals.css` | Responsive visual design and accessibility styling |
-| `app/page.tsx` | React version used for the hosted application |
+| `app/page.tsx` | Separate React/Next.js implementation; not loaded by the GitHub Pages entry point |
 | `AI_EMPLOYEE_LOG.md` | AI employee responsibilities, deliverables, and review criteria |
 
 ## Run Locally
 
-No build step is required for the GitHub Pages version. Download the repository and open `index.html`, or serve the repository with any basic static web server.
+No build step is required for the GitHub Pages version. Download the repository, serve its root directory with a basic static web server, and open the server URL in a modern browser. Serve the files over HTTP rather than opening `index.html` directly with `file://`, because it loads `static-app.js` as a JavaScript module.
+
+The Pages entry point loads `static-app.js` and `app/globals.css` directly. The separate React/Next.js implementation is not a standalone runnable project in this repository: no `package.json` or build configuration is included.
 
 ## Privacy and Safety
 
-The static application processes text entirely inside the browser. It does not create an account, call an external API, transmit submitted text, or retain case content. Users should still avoid pasting passwords, confidential records, or regulated data. All results require human verification.
+The static application processes text entirely inside the browser. It does not create an account, call an external API, transmit submitted text, or persist case content to browser storage. Input and analysis remain in page memory while the page is open; **Copy report** writes the report to the clipboard when selected. Users should still avoid pasting passwords, confidential records, or regulated data. All results require human verification.
 
 ## Test Cases
+
+These expectations apply to the baseline model before analyst feedback or genetic optimization changes its bias or weights. Use **Reset learning lab** to restore the baseline.
 
 | Case | Expected Result |
 | --- | --- |
